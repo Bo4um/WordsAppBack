@@ -25,13 +25,26 @@ public class WordController {
      */
     @PostMapping("/word")
     public ResponseEntity<WordMeaningResponse> getWordMeaning(@RequestBody WordRequest request) {
-        WordMeaningResponse response = openAiService.getWordMeaning(
-                request.getInput(),
-                request.getDefLanguage(),
-                request.getCharacterSex(),
-                request.getCharacterName(),
-                request.getStyle()
-        );
+        WordMeaningResponse response;
+        
+        // Если указан characterId, используем его, иначе используем старые параметры
+        if (request.getCharacterId() != null) {
+            response = openAiService.getWordMeaning(
+                    request.getInput(),
+                    request.getDefLanguage(),
+                    request.getCharacterId(),
+                    request.getStyle()
+            );
+        } else {
+            response = openAiService.getWordMeaning(
+                    request.getInput(),
+                    request.getDefLanguage(),
+                    request.getCharacterSex(),
+                    request.getCharacterName(),
+                    request.getStyle()
+            );
+        }
+        
         return ResponseEntity.ok(response);
     }
 }

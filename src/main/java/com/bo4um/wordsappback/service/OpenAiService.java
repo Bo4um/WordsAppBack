@@ -4,6 +4,8 @@ import com.bo4um.wordsappback.config.OpenAiProperties;
 import com.bo4um.wordsappback.dto.OpenAiRequest;
 import com.bo4um.wordsappback.dto.OpenAiResponse;
 import com.bo4um.wordsappback.dto.WordMeaningResponse;
+import com.bo4um.wordsappback.entity.Character;
+import com.bo4um.wordsappback.repository.CharacterRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,7 @@ public class OpenAiService {
     private final WebClient webClient;
     private final OpenAiProperties openAiProperties;
     private final ObjectMapper objectMapper;
+    private final CharacterRepository characterRepository;
 
     /**
      * Get word meaning and translation from OpenAI API
@@ -41,6 +44,55 @@ public class OpenAiService {
         log.info("Fetching meaning for input: '{}' in language: {}, character: {} ({})", input, targetLanguage, characterName, characterSex);
 
         OpenAiRequest request = buildRequest(input, targetLanguage, characterSex, characterName, style);
+
+        try {
+            String jsonRequest = objectMapper.writeValueAsString(request);
+            log.debug("OpenAI Request JSON: {}", jsonRequest);
+
+            OpenAiResponse response = webClient.post()
+                    .uri(openAiProperties.getUrl())
+                    .header("Authorization", "Bearer " + openAiProperties.getKey())
+                    .header("Content-Type", "application/json")
+                    .bodyValue(request)
+                    .retrieve()
+                    .bodyToMono(OpenAiResponse.class)
+                    .block();
+
+            if (response == null || response.getOutput() == null || response.getOutput().isEmpty()) {
+                log.error("Empty response from OpenAI API for input: {}", input);
+                throw new RuntimeException("Empty response from OpenAI API");
+            }
+
+            String responseText = response.getOutput().get(0).getContent().get(0).getText();
+            return objectMapper.readValue(responseText, WordMeaningResponse.class);
+
+        } catch (WebClientResponseException e) {
+            log.error("OpenAI API error for input '{}': {} - {}", input, e.getStatusCode(), e.getResponseBodyAsString());
+            throw new RuntimeException("OpenAI API error: " + e.getStatusCode(), e);
+        } catch (JsonProcessingException e) {
+            log.error("Failed to parse OpenAI response for input '{}': {}", input, e.getMessage());
+            throw new RuntimeException("Failed to parse API response", e);
+        }
+    }
+
+    /**
+     * Get word meaning using character from database
+     *
+     * @param input          the word or phrase to look up
+     * @param targetLanguage the language for translation
+     * @param characterId    character ID from database
+     * @param style          response style (optional)
+     * @return WordMeaningResponse with definitions and translations
+     */
+    @Cacheable(value = "wordCache", key = "'v3:' + #input + ':' + #targetLanguage + ':' + #characterId + ':' + #style")
+    public WordMeaningResponse getWordMeaning(String input, String targetLanguage, Long characterId, String style) {
+        Character character = characterRepository.findById(characterId)
+                .orElseThrow(() -> new IllegalArgumentException("Character not found with id: " + characterId));
+
+        log.info("Fetching meaning for input: '{}' in language: {}, character: {} ({})", 
+                input, targetLanguage, character.getName(), character.getSex());
+
+        OpenAiRequest request = buildRequest(input, targetLanguage, character.getSex(), character.getName(), style);
 
         try {
             String jsonRequest = objectMapper.writeValueAsString(request);

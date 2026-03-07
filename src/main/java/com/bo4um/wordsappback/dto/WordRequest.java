@@ -27,13 +27,19 @@ public class WordRequest {
     private String defLanguage;
 
     /**
-     * Character sex: "male" or "female"
+     * Character ID (optional, overrides characterSex and characterName)
+     */
+    @JsonProperty("character_id")
+    private Long characterId;
+
+    /**
+     * Character sex: "male" or "female" (used if characterId is not provided)
      */
     @JsonProperty("character_sex")
     private String characterSex;
 
     /**
-     * Character name for examples
+     * Character name for examples (used if characterId is not provided)
      */
     @JsonProperty("character_name")
     private String characterName;
