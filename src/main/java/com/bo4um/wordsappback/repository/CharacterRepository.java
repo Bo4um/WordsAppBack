@@ -13,4 +13,8 @@ public interface CharacterRepository extends JpaRepository<Character, Long> {
     Optional<Character> findByName(String name);
 
     List<Character> findBySex(String sex);
+
+    List<Character> findByIsActiveTrue();
+
+    List<Character> findByIsActiveTrueOrderBySortOrderAscNameAsc();
 }

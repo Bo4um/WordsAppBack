@@ -24,6 +24,7 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final UserProgressService userProgressService;
 
     /**
      * Register new user
@@ -45,6 +46,9 @@ public class AuthService {
         User saved = userRepository.save(user);
         log.info("User registered with id: {}", saved.getId());
 
+        // Создаём прогресс для нового пользователя
+        userProgressService.createProgress(saved);
+
         String token = jwtTokenProvider.generateToken(saved.getUsername(), saved.getRole().name());
 
         return AuthResponse.builder()
@@ -57,7 +61,7 @@ public class AuthService {
     /**
      * Login user
      */
-    @Transactional(readOnly = true)
+    @Transactional
     public AuthResponse login(AuthRequest request) {
         log.info("Authenticating user: {}", request.getUsername());
 
@@ -67,6 +71,9 @@ public class AuthService {
 
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("User not found: " + request.getUsername()));
+
+        // Обновляем streak при входе
+        userProgressService.updateStreak(user.getId());
 
         String token = jwtTokenProvider.generateToken(user.getUsername(), user.getRole().name());
 

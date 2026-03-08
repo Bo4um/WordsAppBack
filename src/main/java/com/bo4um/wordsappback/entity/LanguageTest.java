@@ -5,41 +5,56 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Тест для определения уровня языка
+ */
 @Entity
-@Table(name = "characters")
+@Table(name = "language_test")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Character {
+public class LanguageTest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * Название теста
+     */
     private String name;
 
-    private String sex;
-
-    @Lob
-    @Column(columnDefinition = "BLOB")
-    private byte[] image;
-
+    /**
+     * Описание теста
+     */
     @Column(length = 1000)
     private String description;
 
-    @Builder.Default
-    private Boolean isSystem = false;
+    /**
+     * Язык теста (например, "English")
+     */
+    private String language;
 
+    /**
+     * Количество вопросов в тесте
+     */
+    private Integer totalQuestions;
+
+    /**
+     * Минимальный балл для прохождения
+     */
+    private Integer passingScore;
+
+    /**
+     * Флаг активности теста
+     */
     @Builder.Default
     private Boolean isActive = true;
-
-    private Integer sortOrder;
 }

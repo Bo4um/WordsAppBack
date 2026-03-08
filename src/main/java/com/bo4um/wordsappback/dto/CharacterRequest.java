@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * DTO для создания персонажа
+ * DTO для создания/обновления персонажа
  */
 @Data
 @Builder
@@ -23,4 +23,26 @@ public class CharacterRequest {
      * Пол персонажа: "male" или "female"
      */
     private String sex;
+
+    /**
+     * Описание персонажа
+     */
+    private String description;
+
+    /**
+     * Флаг системного персонажа (защищён от удаления)
+     */
+    @Builder.Default
+    private Boolean isSystem = false;
+
+    /**
+     * Флаг активности персонажа
+     */
+    @Builder.Default
+    private Boolean isActive = true;
+
+    /**
+     * Порядок сортировки персонажей
+     */
+    private Integer sortOrder;
 }

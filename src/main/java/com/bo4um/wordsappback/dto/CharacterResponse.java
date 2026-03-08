@@ -28,4 +28,29 @@ public class CharacterResponse {
      * Пол персонажа: "male" или "female"
      */
     private String sex;
+
+    /**
+     * Описание персонажа
+     */
+    private String description;
+
+    /**
+     * Флаг системного персонажа
+     */
+    private Boolean isSystem;
+
+    /**
+     * Флаг активности персонажа
+     */
+    private Boolean isActive;
+
+    /**
+     * Порядок сортировки
+     */
+    private Integer sortOrder;
+
+    /**
+     * Есть ли изображение у персонажа
+     */
+    private Boolean hasImage;
 }
