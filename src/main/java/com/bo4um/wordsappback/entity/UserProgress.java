@@ -8,8 +8,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
@@ -36,14 +36,12 @@ public class UserProgress {
     /**
      * Текущая серия дней подряд
      */
-    @Builder.Default
-    private Integer currentStreak = 0;
+    private Integer currentStreak;
 
     /**
      * Самая длинная серия
      */
-    @Builder.Default
-    private Integer longestStreak = 0;
+    private Integer longestStreak;
 
     /**
      * Дата последнего визита
@@ -53,8 +51,7 @@ public class UserProgress {
     /**
      * Общее количество изученных слов
      */
-    @Builder.Default
-    private Integer totalWordsLearned = 0;
+    private Integer totalWordsLearned;
 
     /**
      * Дата регистрации

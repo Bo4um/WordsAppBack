@@ -1,0 +1,20 @@
+# Prometheus Configuration for WordsApp
+# Save as prometheus.yml and run: prometheus --config.file=prometheus.yml
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'wordsapp'
+    static_configs:
+      - targets: ['localhost:8080']
+    metrics_path: '/actuator/prometheus'
+    
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['localhost:9187']  # postgres_exporter
+      
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['localhost:9121']  # redis_exporter

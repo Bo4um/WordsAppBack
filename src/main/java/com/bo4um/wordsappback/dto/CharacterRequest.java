@@ -32,13 +32,11 @@ public class CharacterRequest {
     /**
      * Флаг системного персонажа (защищён от удаления)
      */
-    @Builder.Default
     private Boolean isSystem = false;
 
     /**
      * Флаг активности персонажа
      */
-    @Builder.Default
     private Boolean isActive = true;
 
     /**

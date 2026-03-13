@@ -35,3 +35,20 @@ build/
 ### Application properties with secrets ###
 src/main/resources/application.properties
 !src/main/resources/application.properties.example
+
+### Docker ###
+docker-compose.override.yml
+*.log
+
+### Database ###
+data/*.mv.db
+data/*.trace.db
+
+### Audio uploads ###
+audio-uploads/
+
+### IDE temporary files ###
+*.tmp
+*.bak
+*.swp
+*~

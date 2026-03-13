@@ -1,6 +1,7 @@
 package com.bo4um.wordsappback.config;
 
 import com.bo4um.wordsappback.security.JwtAuthenticationFilter;
+import com.bo4um.wordsappback.security.RateLimitFilter;
 import com.bo4um.wordsappback.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +27,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final RateLimitFilter rateLimitFilter;
     private final CustomUserDetailsService userDetailsService;
 
     @Bean
@@ -37,17 +39,20 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/api/word").permitAll()
-                        
+                        .requestMatchers("/v3/api-docs/**").permitAll()
+                        .requestMatchers("/swagger-ui/**").permitAll()
+
                         // Все endpoints персонажей требуют аутентификации
                         // CRUD операции защищены через @PreAuthorize в контроллере
                         .requestMatchers("/api/characters/**").authenticated()
-                        
+
                         // Все остальные запросы требуют аутентификации
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(rateLimitFilter, JwtAuthenticationFilter.class)
                 .build();
     }
 

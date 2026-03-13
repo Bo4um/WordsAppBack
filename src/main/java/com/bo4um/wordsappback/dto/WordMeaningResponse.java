@@ -2,6 +2,7 @@ package com.bo4um.wordsappback.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.Builder;
 
 import java.util.List;
 
@@ -10,6 +11,7 @@ import java.util.List;
  * Contains word meanings with definitions and translations
  */
 @Data
+@Builder
 public class WordMeaningResponse {
 
     private String input;
@@ -22,6 +24,7 @@ public class WordMeaningResponse {
     private List<Meaning> meanings;
 
     @Data
+@Builder
     public static class Meaning {
         private String definition;
         private String level;

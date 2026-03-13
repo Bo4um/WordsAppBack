@@ -9,6 +9,7 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 /**
@@ -55,6 +56,5 @@ public class LanguageTest {
     /**
      * Флаг активности теста
      */
-    @Builder.Default
     private Boolean isActive = true;
 }

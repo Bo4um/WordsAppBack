@@ -10,6 +10,7 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -35,10 +36,8 @@ public class Character {
     @Column(length = 1000)
     private String description;
 
-    @Builder.Default
     private Boolean isSystem = false;
 
-    @Builder.Default
     private Boolean isActive = true;
 
     private Integer sortOrder;

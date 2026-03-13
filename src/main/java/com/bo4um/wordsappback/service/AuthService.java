@@ -37,11 +37,10 @@ public class AuthService {
             throw new IllegalArgumentException("User with username '" + request.getUsername() + "' already exists");
         }
 
-        User user = User.builder()
-                .username(request.getUsername())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(User.Role.USER)
-                .build();
+        User user = new User();
+        user.setUsername(request.getUsername());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(User.Role.USER);
 
         User saved = userRepository.save(user);
         log.info("User registered with id: {}", saved.getId());
@@ -51,11 +50,12 @@ public class AuthService {
 
         String token = jwtTokenProvider.generateToken(saved.getUsername(), saved.getRole().name());
 
-        return AuthResponse.builder()
-                .token(token)
-                .username(saved.getUsername())
-                .role(saved.getRole().name())
-                .build();
+        AuthResponse response = new AuthResponse();
+        response.setToken(token);
+        response.setUsername(saved.getUsername());
+        response.setRole(saved.getRole().name());
+
+        return response;
     }
 
     /**
@@ -77,10 +77,11 @@ public class AuthService {
 
         String token = jwtTokenProvider.generateToken(user.getUsername(), user.getRole().name());
 
-        return AuthResponse.builder()
-                .token(token)
-                .username(user.getUsername())
-                .role(user.getRole().name())
-                .build();
+        AuthResponse response = new AuthResponse();
+        response.setToken(token);
+        response.setUsername(user.getUsername());
+        response.setRole(user.getRole().name());
+
+        return response;
     }
 }

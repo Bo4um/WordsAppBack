@@ -20,5 +20,7 @@ public interface WordLearningRepository extends JpaRepository<WordLearning, Long
 
     List<WordLearning> findByUserIdAndNextReviewBefore(Long userId, LocalDate date);
 
+    List<WordLearning> findByNextReviewBefore(LocalDate date);
+
     long countByUserId(Long userId);
 }
