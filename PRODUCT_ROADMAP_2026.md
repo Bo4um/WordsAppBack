@@ -42,20 +42,20 @@
 
 ## 📋 План доработок (приоритизированный)
 
-| Приоритет | Фича | Зачем (Business Value) | Сложность | Срок (спринты) | KPI успеха |
-|-----------|------|----------------------|-----------|----------------|------------|
-| **P0** | **Meme-Based Learning Engine** | Вирусный рост, Gen Z аудитория, снижение CAC | Средняя | 2 спринта (3 недели) | +25% organic installs, +15% D7 retention |
-| **P0** | **Situational AI 2.0** (эмоции, релокация) | Решение боли #1 эмигрантов — "языковой паралич" | Средняя | 2 спринта | +30% dialog sessions, +20% Premium conversion |
-| **P0** | **Web Checkout + App-to-Web Funnel** | Экономия 15-30% на комиссиях Apple/Google | Низкая | 1 спринт (1.5 недели) | +40% web payments, +25% revenue margin |
-| **P1** | **Pragmatic Error Correction** (Soft Skills Coach) | Уникальное преимущество vs Duolingo | Высокая | 3 спринта | +35% exercise completion, NPS +15 |
-| **P1** | **Smart Nanolearning Generator** | Обучение "точно в срок", удержание корпоративных клиентов | Средняя | 2 спринта | +40% session frequency, B2B contracts +10 |
-| **P1** | **Streak Recovery + Challenge System** | Снижение churn после пропуска | Низкая | 1 спринт | -20% churn rate, +15% D30 retention |
-| **P2** | **Community Feed** (аудио/видео кружочки) | Социальное удержание, снижение изоляции | Высокая | 3 спринта | +50% social engagement, +25% D60 retention |
-| **P2** | **Dynamic Leaderboards** (категории) | Мотивация разных сегментов пользователей | Низкая | 1 спринт | +30% challenge participation |
-| **P2** | **IELTS/TOEFL Prep Mode** | Привлечение академических соискателей (платежеспособные) | Средняя | 2 спринта | +15% premium subs (students) |
-| **P3** | **ADHD-Friendly Mode** (нано-уроки 2-5 мин) | Инклюзивность, лояльная аудитория | Средняя | 2 спринта | +20% ADHD user retention |
-| **P3** | **Corporate Dashboard** (B2B) | Стабильные долгосрочные контракты | Высокая | 4 спринта | 5+ B2B contracts ($50K ARR) |
-| **P3** | **In-App Contextual Nudges** | Увеличение LTV через персонализированные пуши | Низкая | 1 спринт | +15% DAU, +10% session duration |
+| Приоритет | Фича | Зачем (Business Value) | Сложность | Срок (спринты) | Статус | KPI успеха |
+|-----------|------|----------------------|-----------|----------------|--------|------------|
+| **P0** | **Meme-Based Learning Engine** | Вирусный рост, Gen Z аудитория, снижение CAC | Средняя | 2 спринта (3 недели) | ✅ **DONE** | +25% organic installs, +15% D7 retention |
+| **P0** | **Situational AI 2.0** (эмоции, релокация) | Решение боли #1 эмигрантов — "языковой паралич" | Средняя | 2 спринта | ✅ **DONE** | +30% dialog sessions, +20% Premium conversion |
+| **P0** | **Web Checkout + App-to-Web Funnel** | Экономия 15-30% на комиссиях Apple/Google | Низкая | 1 спринт (1.5 недели) | ✅ **DONE** | +40% web payments, +25% revenue margin |
+| **P1** | **Pragmatic Error Correction** (Soft Skills Coach) | Уникальное преимущество vs Duolingo | Высокая | 3 спринта | ✅ **DONE** | +35% exercise completion, NPS +15 |
+| **P1** | **Smart Nanolearning Generator** | Обучение "точно в срок", удержание корпоративных клиентов | Средняя | 2 спринта | ✅ **DONE** | +40% session frequency, B2B contracts +10 |
+| **P1** | **Streak Recovery + Challenge System** | Снижение churn после пропуска | Низкая | 1 спринт | ✅ **DONE** | -20% churn rate, +15% D30 retention |
+| **P2** | **Community Feed** (аудио/видео кружочки) | Социальное удержание, снижение изоляции | Высокая | 3 спринта | ⬜ TODO | +50% social engagement, +25% D60 retention |
+| **P2** | **Dynamic Leaderboards** (категории) | Мотивация разных сегментов пользователей | Низкая | 1 спринт | ⬜ TODO | +30% challenge participation |
+| **P2** | **IELTS/TOEFL Prep Mode** | Привлечение академических соискателей (платежеспособные) | Средняя | 2 спринта | ⬜ TODO | +15% premium subs (students) |
+| **P3** | **ADHD-Friendly Mode** (нано-уроки 2-5 мин) | Инклюзивность, лояльная аудитория | Средняя | 2 спринта | ⬜ TODO | +20% ADHD user retention |
+| **P3** | **Corporate Dashboard** (B2B) | Стабильные долгосрочные контракты | Высокая | 4 спринта | ⬜ TODO | 5+ B2B contracts ($50K ARR) |
+| **P3** | **In-App Contextual Nudges** | Увеличение LTV через персонализированные пуши | Низкая | 1 спринт | ⬜ TODO | +15% DAU, +10% session duration |
 
 ---
 
