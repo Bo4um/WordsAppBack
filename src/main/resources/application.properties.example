@@ -29,3 +29,10 @@ spring.cache.time-to-live=3600000
 # JWT Configuration
 jwt.secret=CHANGE_THIS_SECRET_KEY_FOR_PRODUCTION_MUST_BE_LONG_ENOUGH
 jwt.expiration=86400000
+
+# Stripe Configuration (for Premium subscriptions)
+stripe.api.key=sk_test_YOUR_STRIPE_SECRET_KEY
+stripe.webhook.secret=whsec_YOUR_WEBHOOK_SECRET
+stripe.price.id.premium=price_PREMIUM_PRICE_ID
+stripe.price.id.lifetime=price_LIFETIME_PRICE_ID
+app.frontend.url=http://localhost:3000

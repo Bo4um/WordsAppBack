@@ -3,7 +3,9 @@ package com.bo4um.wordsappback.controller;
 import com.bo4um.wordsappback.dto.SubscriptionResponse;
 import com.bo4um.wordsappback.dto.UpgradeSubscriptionRequest;
 import com.bo4um.wordsappback.entity.UserSubscription;
+import com.bo4um.wordsappback.service.StripeService;
 import com.bo4um.wordsappback.service.SubscriptionService;
+import com.stripe.exception.StripeException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -30,6 +32,7 @@ import java.util.Optional;
 public class SubscriptionController {
 
     private final SubscriptionService subscriptionService;
+    private final StripeService stripeService;
 
     @GetMapping
     @Operation(summary = "Моя подписка", description = "Получить информацию о текущей подписке пользователя")
@@ -115,6 +118,56 @@ public class SubscriptionController {
             subscriptionService.cancelSubscription(subscription.get().getId());
             return ResponseEntity.ok().build();
         } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping("/checkout")
+    @Operation(summary = "Создать Stripe Checkout сессию", description = "Создать ссылку на оплату подписки через Stripe")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Checkout сессия создана"),
+            @ApiResponse(responseCode = "400", description = "Ошибка создания сессии")
+    })
+    public ResponseEntity<Map<String, Object>> createCheckoutSession(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody Map<String, String> request) {
+        Long userId = 1L; // Заглушка
+        String tier = request.getOrDefault("tier", "PREMIUM");
+
+        try {
+            Map<String, Object> session = stripeService.createCheckoutSession(userId, tier);
+            return ResponseEntity.ok(session);
+        } catch (StripeException e) {
+            log.error("Failed to create checkout session: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @GetMapping("/plans")
+    @Operation(summary = "Тарифные планы", description = "Получить информацию о доступных тарифах")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Успешный ответ")
+    })
+    public ResponseEntity<Map<String, Object>> getSubscriptionPlans() {
+        return ResponseEntity.ok(stripeService.getPlans());
+    }
+
+    @GetMapping("/checkout/status/{sessionId}")
+    @Operation(summary = "Статус checkout сессии", description = "Проверить статус оплаты")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Успешный ответ"),
+            @ApiResponse(responseCode = "404", description = "Сессия не найдена")
+    })
+    public ResponseEntity<Map<String, Object>> getCheckoutStatus(@PathVariable String sessionId) {
+        try {
+            var session = stripeService.retrieveSession(sessionId);
+            Map<String, Object> status = new HashMap<>();
+            status.put("status", session.getPaymentStatus());
+            status.put("amountTotal", session.getAmountTotal());
+            status.put("currency", session.getCurrency());
+            status.put("customerId", session.getCustomer());
+            return ResponseEntity.ok(status);
+        } catch (StripeException e) {
             return ResponseEntity.notFound().build();
         }
     }
