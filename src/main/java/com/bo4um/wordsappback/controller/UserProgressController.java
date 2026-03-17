@@ -4,7 +4,7 @@ import com.bo4um.wordsappback.dto.DictionaryProgressResponse;
 import com.bo4um.wordsappback.dto.UserProgressResponse;
 import com.bo4um.wordsappback.dto.WordLearningRequest;
 import com.bo4um.wordsappback.dto.WordLearningResponse;
-import com.bo4um.wordsappback.security.JwtTokenProvider;
+
 import com.bo4um.wordsappback.service.DictionaryProgressService;
 import com.bo4um.wordsappback.service.UserProgressService;
 import com.bo4um.wordsappback.service.WordLearningService;
@@ -32,7 +32,7 @@ public class UserProgressController {
     private final UserProgressService userProgressService;
     private final DictionaryProgressService dictionaryProgressService;
     private final WordLearningService wordLearningService;
-    private final JwtTokenProvider jwtTokenProvider;
+
 
     /**
      * Получить общий прогресс пользователя
@@ -40,7 +40,7 @@ public class UserProgressController {
      */
     @GetMapping
     public ResponseEntity<UserProgressResponse> getProgress(HttpServletRequest request) {
-        Long userId = getUserIdFromRequest(request);
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         return ResponseEntity.ok(userProgressService.getProgress(userId));
     }
 
@@ -50,7 +50,7 @@ public class UserProgressController {
      */
     @GetMapping("/stats")
     public ResponseEntity<UserProgressResponse> getStats(HttpServletRequest request) {
-        Long userId = getUserIdFromRequest(request);
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         return ResponseEntity.ok(userProgressService.getStats(userId));
     }
 
@@ -60,7 +60,7 @@ public class UserProgressController {
      */
     @GetMapping("/dictionaries")
     public ResponseEntity<List<DictionaryProgressResponse>> getDictionaryProgress(HttpServletRequest request) {
-        Long userId = getUserIdFromRequest(request);
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         return ResponseEntity.ok(dictionaryProgressService.getDictionaryProgress(userId));
     }
 
@@ -73,7 +73,7 @@ public class UserProgressController {
             HttpServletRequest request,
             @PathVariable String language
     ) {
-        Long userId = getUserIdFromRequest(request);
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         return ResponseEntity.ok(dictionaryProgressService.getDictionaryProgress(userId, language));
     }
 
@@ -83,7 +83,7 @@ public class UserProgressController {
      */
     @GetMapping("/words")
     public ResponseEntity<List<WordLearningResponse>> getLearnedWords(HttpServletRequest request) {
-        Long userId = getUserIdFromRequest(request);
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         return ResponseEntity.ok(wordLearningService.getLearnedWords(userId));
     }
 
@@ -96,7 +96,7 @@ public class UserProgressController {
             HttpServletRequest request,
             @RequestParam String language
     ) {
-        Long userId = getUserIdFromRequest(request);
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         return ResponseEntity.ok(wordLearningService.getLearnedWords(userId, language));
     }
 
@@ -106,7 +106,7 @@ public class UserProgressController {
      */
     @GetMapping("/words/review")
     public ResponseEntity<List<WordLearningResponse>> getWordsForReview(HttpServletRequest request) {
-        Long userId = getUserIdFromRequest(request);
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         return ResponseEntity.ok(wordLearningService.getWordsForReview(userId));
     }
 
@@ -119,26 +119,9 @@ public class UserProgressController {
             HttpServletRequest request,
             @RequestBody WordLearningRequest wordRequest
     ) {
-        Long userId = getUserIdFromRequest(request);
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         return ResponseEntity.ok(wordLearningService.markWordAsLearned(userId, wordRequest));
     }
 
-    private Long getUserIdFromRequest(HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            throw new IllegalArgumentException("Authorization header not found or invalid");
-        }
-        String token = authHeader.substring(7);
-        String username = jwtTokenProvider.getUsernameFromToken(token);
-        
-        // Для простоты используем маппинг: user=1, admin=2
-        // В реальном приложении нужно использовать UserRepository
-        if ("user".equals(username)) {
-            return 1L;
-        } else if ("admin".equals(username)) {
-            return 2L;
-        } else {
-            throw new IllegalArgumentException("Unknown user: " + username);
-        }
-    }
+
 }

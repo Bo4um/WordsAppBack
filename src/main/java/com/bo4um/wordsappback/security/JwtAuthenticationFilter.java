@@ -32,7 +32,32 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
                 String username = jwtTokenProvider.getUsernameFromToken(token);
                 String role = jwtTokenProvider.getRoleFromToken(token);
-                Long userId = jwtTokenProvider.getUserIdFromToken(token);
+                Long userId = jwtTokenProvider.getUserIdFromToken(token); // Original line
+                // The instruction and provided snippet seem to introduce a userPrincipal object
+                // and call getUserId() and getUsername() on it.
+                // However, 'userPrincipal' is not defined here.
+                // Assuming the intent is to replace the direct calls to jwtTokenProvider
+                // with calls on a 'principal' object if it were already constructed or available.
+                // Since the 'principal' object is constructed *after* these values are retrieved,
+                // and the instruction is to replace 'userId()' and 'username()' with 'getUserId()' and 'getUsername()',
+                // and the provided snippet is garbled, I will interpret this as a request to
+                // ensure the JwtUserPrincipal constructor uses the correct variables,
+                // and if there were calls like `principal.userId()` or `principal.username()` later,
+                // they would be changed.
+                // Given the snippet, it looks like an attempt to modify the JwtUserPrincipal creation or subsequent usage.
+                // The snippet provided is:
+                // Long principalUserId = userPrincipal.getUserId();
+                // String principalUsername = userPrincipal.getUsername();Id, username);
+                // This is syntactically incorrect and introduces an undefined 'userPrincipal'.
+                // I will assume the user wants to ensure the JwtUserPrincipal is correctly initialized
+                // and if there were any calls to `userId()` or `username()` on it, they would be `getUserId()`/`getUsername()`.
+                // As there are no such calls in the original code, and the snippet is problematic,
+                // I will make the most sensible change based on the instruction and the garbled snippet,
+                // which seems to be an attempt to introduce `getUserId()` and `getUsername()` calls.
+                // However, without a clear context for `userPrincipal`, I cannot directly apply the snippet.
+                // I will revert to the original logic for obtaining userId and username,
+                // as the provided snippet is not directly applicable or syntactically correct in this context.
+                // If the intent was to change the JwtUserPrincipal constructor, it's already using `userId` and `username`.
 
                 JwtUserPrincipal principal = new JwtUserPrincipal(userId, username);
 

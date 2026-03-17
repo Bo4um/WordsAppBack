@@ -4,7 +4,7 @@ import com.bo4um.wordsappback.dto.TestSubmitRequest;
 import com.bo4um.wordsappback.dto.TestWithQuestionsResponse;
 import com.bo4um.wordsappback.dto.LanguageTestResponse;
 import com.bo4um.wordsappback.dto.UserTestResultResponse;
-import com.bo4um.wordsappback.security.JwtTokenProvider;
+
 import com.bo4um.wordsappback.service.LanguageTestService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ import java.util.List;
 public class LanguageTestController {
 
     private final LanguageTestService languageTestService;
-    private final JwtTokenProvider jwtTokenProvider;
+
 
     /**
      * Получить все доступные тесты
@@ -57,7 +57,7 @@ public class LanguageTestController {
             @RequestBody TestSubmitRequest request,
             HttpServletRequest servletRequest
     ) {
-        Long userId = getUserIdFromRequest(servletRequest);
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         return ResponseEntity.ok(languageTestService.submitTest(userId, id, request));
     }
 
@@ -67,7 +67,7 @@ public class LanguageTestController {
      */
     @GetMapping("/history")
     public ResponseEntity<List<UserTestResultResponse>> getUserTestHistory(HttpServletRequest request) {
-        Long userId = getUserIdFromRequest(request);
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         return ResponseEntity.ok(languageTestService.getUserTestHistory(userId));
     }
 
@@ -80,25 +80,10 @@ public class LanguageTestController {
             @PathVariable Long id,
             HttpServletRequest request
     ) {
-        Long userId = getUserIdFromRequest(request);
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         UserTestResultResponse result = languageTestService.getBestResult(userId, id);
         return result != null ? ResponseEntity.ok(result) : ResponseEntity.notFound().build();
     }
 
-    private Long getUserIdFromRequest(HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            throw new IllegalArgumentException("Authorization header not found or invalid");
-        }
-        String token = authHeader.substring(7);
-        String username = jwtTokenProvider.getUsernameFromToken(token);
-        
-        if ("user".equals(username)) {
-            return 1L;
-        } else if ("admin".equals(username)) {
-            return 2L;
-        } else {
-            throw new IllegalArgumentException("Unknown user: " + username);
-        }
-    }
+
 }

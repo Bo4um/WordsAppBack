@@ -23,8 +23,8 @@ public final class SecurityUtils {
         }
 
         Object principal = authentication.getPrincipal();
-        if (principal instanceof JwtUserPrincipal jwtUserPrincipal) {
-            return jwtUserPrincipal.userId();
+        if (principal instanceof JwtUserPrincipal) {
+            return ((JwtUserPrincipal) principal).getUserId();
         }
 
         throw new IllegalStateException("Authentication principal is not of type JwtUserPrincipal");

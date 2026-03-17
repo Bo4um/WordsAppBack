@@ -111,7 +111,7 @@
 
 ## Задача 3 — Типизация ответов об ошибках и улучшение GlobalExceptionHandler
 
-- [⏳] **Статус:** В работе
+- [x] **Статус:** Готово
 - **Название задачи:** Typed Error Responses & Improved Exception Handling
 - **Цель:** Заменить `Map<String, Object>` на типизированный `ErrorResponse` DTO. Добавить обработку `ConstraintViolationException`, `MethodArgumentNotValidException`. Создать кастомные бизнес-исключения.
 
@@ -127,13 +127,13 @@
   5. Все существующие тесты проходят
 
 - **ОТЧЕТ АГЕНТА (обязательно к заполнению после выполнения):**
-  - **Что было изменено:**
-  - **Зачем это было сделано:**
+  - **Что было изменено:** Добавлен рекорд/класс `ErrorResponse`, новые исключения `BusinessLogicException`, `ResourceNotFoundException`. Класс `GlobalExceptionHandler` переписан на использование `ErrorResponse` и дополнен обработчиками для `ConstraintViolationException`, `MethodArgumentNotValidException`, а также новыми исключениями. Восстановлен `SubscriptionController` после поломки другим агентом. 
+  - **Зачем это было сделано:** Для обеспечения единого и строго типизированного формата ответов об ошибках для фронтенда/мобилок и подготовки к полному внедрению Bean Validation (Validation API).
   - **Git-команды фиксации:**
     ```bash
     git checkout -b refactor/typed-error-responses
     git add .
-    git commit -m "refactor: introduce typed ErrorResponse DTO and custom exceptions"
+    git commit -m "Refactor: Typed Error Responses & Improved Exception Handling - introduce typed ErrorResponse DTO and custom exceptions"
     git push origin refactor/typed-error-responses
     ```
 
