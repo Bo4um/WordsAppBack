@@ -45,7 +45,7 @@ public class RecommendationController {
     })
     public ResponseEntity<List<RecommendationResponse>> getUnreadRecommendations(
             @AuthenticationPrincipal UserDetails userDetails) {
-        Long userId = 1L; // Заглушка
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         return ResponseEntity.ok(recommendationService.getUnreadRecommendations(userId));
     }
 
@@ -58,7 +58,7 @@ public class RecommendationController {
     public ResponseEntity<Void> markAsRead(
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable Long id) {
-        Long userId = 1L; // Заглушка
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         recommendationService.markAsRead(id, userId);
         return ResponseEntity.ok().build();
     }
@@ -70,7 +70,7 @@ public class RecommendationController {
     })
     public ResponseEntity<Void> markAllAsRead(
             @AuthenticationPrincipal UserDetails userDetails) {
-        Long userId = 1L; // Заглушка
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         recommendationService.markAllAsRead(userId);
         return ResponseEntity.ok().build();
     }

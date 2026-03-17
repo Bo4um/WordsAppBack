@@ -50,7 +50,7 @@ public class CorporateController {
     public ResponseEntity<?> joinCorporateAccount(
             @RequestBody Map<String, Object> request) {
         // userId would come from auth in production
-        Long userId = 1L;
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         String accountCode = (String) request.get("accountCode");
         String department = (String) request.get("department");
         String position = (String) request.get("position");

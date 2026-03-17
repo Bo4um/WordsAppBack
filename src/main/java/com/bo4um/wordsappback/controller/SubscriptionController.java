@@ -41,7 +41,7 @@ public class SubscriptionController {
     })
     public ResponseEntity<SubscriptionResponse> getMySubscription(
             @AuthenticationPrincipal UserDetails userDetails) {
-        Long userId = 1L; // Заглушка - нужно получить из JWT
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
 
         Optional<UserSubscription> subscription = subscriptionService.getUserSubscription(userId);
 

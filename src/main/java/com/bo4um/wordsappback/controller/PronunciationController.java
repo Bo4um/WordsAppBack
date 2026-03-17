@@ -40,7 +40,7 @@ public class PronunciationController {
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestParam("audio") MultipartFile audioFile,
             @RequestParam("targetPhrase") String targetPhrase) {
-        Long userId = 1L; // Заглушка
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         return ResponseEntity.ok(pronunciationService.submitPronunciation(userId, audioFile, targetPhrase));
     }
 
@@ -51,7 +51,7 @@ public class PronunciationController {
     })
     public ResponseEntity<List<PronunciationResponse>> getUserAttempts(
             @AuthenticationPrincipal UserDetails userDetails) {
-        Long userId = 1L; // Заглушка
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         return ResponseEntity.ok(pronunciationService.getUserAttempts(userId));
     }
 
@@ -64,7 +64,7 @@ public class PronunciationController {
     public ResponseEntity<PronunciationResponse> getAttempt(
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable Long id) {
-        Long userId = 1L; // Заглушка
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         return ResponseEntity.ok(pronunciationService.getAttempt(id, userId));
     }
 
@@ -75,7 +75,7 @@ public class PronunciationController {
     })
     public ResponseEntity<Map<String, Object>> getPronunciationStats(
             @AuthenticationPrincipal UserDetails userDetails) {
-        Long userId = 1L; // Заглушка
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         return ResponseEntity.ok(pronunciationService.getPronunciationStats(userId));
     }
 }

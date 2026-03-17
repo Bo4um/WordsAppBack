@@ -48,7 +48,7 @@ public class AuthService {
         // Создаём прогресс для нового пользователя
         userProgressService.createProgress(saved);
 
-        String token = jwtTokenProvider.generateToken(saved.getUsername(), saved.getRole().name());
+        String token = jwtTokenProvider.generateToken(saved.getUsername(), saved.getRole().name(), saved.getId());
 
         AuthResponse response = new AuthResponse();
         response.setToken(token);
@@ -75,7 +75,7 @@ public class AuthService {
         // Обновляем streak при входе
         userProgressService.updateStreak(user.getId());
 
-        String token = jwtTokenProvider.generateToken(user.getUsername(), user.getRole().name());
+        String token = jwtTokenProvider.generateToken(user.getUsername(), user.getRole().name(), user.getId());
 
         AuthResponse response = new AuthResponse();
         response.setToken(token);

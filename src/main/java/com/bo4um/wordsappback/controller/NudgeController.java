@@ -34,7 +34,7 @@ public class NudgeController {
     })
     public ResponseEntity<List<UserNudge>> getUnreadNudges(
             @AuthenticationPrincipal UserDetails userDetails) {
-        Long userId = 1L; // Заглушка
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         return ResponseEntity.ok(nudgeService.getUnreadNudges(userId));
     }
 
@@ -46,7 +46,7 @@ public class NudgeController {
     public ResponseEntity<List<UserNudge>> getNudgeHistory(
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestParam(required = false, defaultValue = "20") Integer limit) {
-        Long userId = 1L; // Заглушка
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         return ResponseEntity.ok(nudgeService.getNudgeHistory(userId, limit));
     }
 

@@ -54,7 +54,7 @@ public class LeaderboardController {
     public ResponseEntity<Map<String, Object>> getMyRank(
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable String category) {
-        Long userId = 1L; // Заглушка
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         return ResponseEntity.ok(leaderboardService.getUserRank(userId, category));
     }
 }

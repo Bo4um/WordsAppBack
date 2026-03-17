@@ -31,10 +31,9 @@ public class DialogService {
     private final ConversationMessageRepository messageRepository;
     private final CharacterRepository characterRepository;
     private final UserRepository userRepository;
-    private final WebClient webClient;
-    private final ObjectMapper objectMapper;
+    private final OpenAiService openAiService;
 
-    private static final String OPENAI_API_URL = "https://api.openai.com/v1/responses";
+
 
     @Transactional(readOnly = true)
     public List<ScenarioResponse> getAllScenarios(String language) {
@@ -127,7 +126,8 @@ public class DialogService {
         List<ConversationMessage> history = messageRepository.findBySessionIdOrderByTimestampAsc(request.getSessionId());
 
         // Отправляем запрос к OpenAI
-        String aiResponse = callOpenAI(session, history, request.getMessage());
+        Map<String, Object> requestBody = buildOpenAIRequestBody(session, history, request.getMessage());
+        String aiResponse = openAiService.callChatCompletion(requestBody);
 
         // Сохраняем ответ AI
         ConversationMessage aiMessage = ConversationMessage.builder()
@@ -168,7 +168,8 @@ public class DialogService {
         List<ConversationMessage> history = messageRepository.findBySessionIdOrderByTimestampAsc(request.getSessionId());
 
         // Streaming запрос к OpenAI
-        return streamFromOpenAI(session, history, request.getMessage())
+        Map<String, Object> requestBody = new HashMap<>(buildOpenAIRequestBody(session, history, request.getMessage()));
+        return openAiService.streamChatCompletion(requestBody)
                 .flatMap(content -> {
                     ConversationMessage aiMessage = ConversationMessage.builder()
                             .session(session)
@@ -235,57 +236,6 @@ public class DialogService {
                 .build();
     }
 
-    private String callOpenAI(ConversationSession session, List<ConversationMessage> history, String userMessage) {
-        try {
-            Map<String, Object> requestBody = buildOpenAIRequestBody(session, history, userMessage);
-
-            String jsonRequest = objectMapper.writeValueAsString(requestBody);
-            log.debug("OpenAI Dialog Request: {}", jsonRequest);
-
-            Map<String, Object> response = webClient.post()
-                    .uri(OPENAI_API_URL)
-                    .header("Authorization", "Bearer " + getOpenAIKey())
-                    .header("Content-Type", "application/json")
-                    .bodyValue(requestBody)
-                    .retrieve()
-                    .bodyToMono(Map.class)
-                    .block();
-
-            if (response == null || !response.containsKey("output")) {
-                throw new RuntimeException("Empty response from OpenAI API");
-            }
-
-            return extractContentFromOpenAIResponse(response);
-
-        } catch (WebClientResponseException e) {
-            log.error("OpenAI API error: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
-            throw new RuntimeException("OpenAI API error: " + e.getStatusCode(), e);
-        } catch (JsonProcessingException e) {
-            log.error("Failed to process JSON: {}", e.getMessage());
-            throw new RuntimeException("Failed to process JSON", e);
-        }
-    }
-
-    private Flux<String> streamFromOpenAI(ConversationSession session, List<ConversationMessage> history, String userMessage) {
-        try {
-            Map<String, Object> requestBody = buildOpenAIRequestBody(session, history, userMessage);
-            requestBody.put("stream", true);
-
-            return webClient.post()
-                    .uri(OPENAI_API_URL)
-                    .header("Authorization", "Bearer " + getOpenAIKey())
-                    .header("Content-Type", "application/json")
-                    .bodyValue(requestBody)
-                    .retrieve()
-                    .bodyToFlux(String.class)
-                    .map(this::parseSSEEvent);
-
-        } catch (WebClientResponseException e) {
-            log.error("OpenAI streaming error: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
-            return Flux.error(new RuntimeException("OpenAI API error: " + e.getStatusCode()));
-        }
-    }
-
     private Map<String, Object> buildOpenAIRequestBody(ConversationSession session,
                                                         List<ConversationMessage> history,
                                                         String userMessage) {
@@ -348,47 +298,8 @@ public class DialogService {
         return prompt.toString();
     }
 
-    private String extractContentFromOpenAIResponse(Map<String, Object> response) {
-        try {
-            List<Map<String, Object>> output = (List<Map<String, Object>>) response.get("output");
-            if (output != null && !output.isEmpty()) {
-                Map<String, Object> content = output.get(0);
-                List<Map<String, Object>> contentList = (List<Map<String, Object>>) content.get("content");
-                if (contentList != null && !contentList.isEmpty()) {
-                    return (String) contentList.get(0).get("text");
-                }
-            }
-            return "Sorry, I couldn't generate a response.";
-        } catch (Exception e) {
-            log.error("Failed to extract content from response: {}", e.getMessage());
-            return "Sorry, there was an error processing the response.";
-        }
-    }
-
-    private String parseSSEEvent(String event) {
-        // Парсинг SSE событий от OpenAI
-        if (event.startsWith("data: ")) {
-            String data = event.substring(6);
-            try {
-                Map<String, Object> jsonData = objectMapper.readValue(data, Map.class);
-                // Извлекаем дельту контента
-                // Это упрощённая реализация, можно расширить
-                return data;
-            } catch (JsonProcessingException e) {
-                log.warn("Failed to parse SSE event: {}", e.getMessage());
-                return event;
-            }
-        }
-        return event;
-    }
-
     private int estimateTokens(String text) {
         // Приблизительная оценка: 1 токен ≈ 4 символа
         return text.length() / 4;
-    }
-
-    private String getOpenAIKey() {
-        // Получение ключа из environment variable или конфигурации
-        return System.getenv("OPENAI_API_KEY");
     }
 }

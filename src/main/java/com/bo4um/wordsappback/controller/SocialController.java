@@ -38,8 +38,7 @@ public class SocialController {
     public ResponseEntity<Void> sendFriendRequest(
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable Long friendId) {
-        Long userId = 1L; // Заглушка
-        socialService.sendFriendRequest(userId, friendId);
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();     socialService.sendFriendRequest(userId, friendId);
         return ResponseEntity.ok().build();
     }
 
@@ -52,7 +51,7 @@ public class SocialController {
     public ResponseEntity<Void> acceptFriendRequest(
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable Long requestId) {
-        Long userId = 1L; // Заглушка
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         socialService.acceptFriendRequest(userId, requestId);
         return ResponseEntity.ok().build();
     }
@@ -64,7 +63,7 @@ public class SocialController {
     })
     public ResponseEntity<List<FriendResponse>> getFriends(
             @AuthenticationPrincipal UserDetails userDetails) {
-        Long userId = 1L; // Заглушка
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         return ResponseEntity.ok(socialService.getFriends(userId));
     }
 
@@ -87,7 +86,7 @@ public class SocialController {
     })
     public ResponseEntity<RankResponse> getMyRank(
             @AuthenticationPrincipal UserDetails userDetails) {
-        Long userId = 1L; // Заглушка
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         return ResponseEntity.ok(socialService.getUserRank(userId));
     }
 
@@ -109,7 +108,7 @@ public class SocialController {
     })
     public ResponseEntity<List<ChallengeProgressResponse>> getChallengeProgress(
             @AuthenticationPrincipal UserDetails userDetails) {
-        Long userId = 1L; // Заглушка
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         return ResponseEntity.ok(socialService.getUserChallengeProgress(userId));
     }
 
@@ -122,7 +121,7 @@ public class SocialController {
     public ResponseEntity<Void> claimReward(
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable Long progressId) {
-        Long userId = 1L; // Заглушка
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         socialService.claimReward(userId, progressId);
         return ResponseEntity.ok().build();
     }

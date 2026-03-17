@@ -38,7 +38,7 @@ public class LearningMaterialController {
     public ResponseEntity<LearningMaterialResponse> uploadMaterial(
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestParam("file") MultipartFile file) {
-        Long userId = 1L; // Заглушка - получить из JWT
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         return ResponseEntity.ok(learningMaterialService.uploadMaterial(userId, file));
     }
 
@@ -49,7 +49,7 @@ public class LearningMaterialController {
     })
     public ResponseEntity<List<LearningMaterialResponse>> getUserMaterials(
             @AuthenticationPrincipal UserDetails userDetails) {
-        Long userId = 1L; // Заглушка
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         return ResponseEntity.ok(learningMaterialService.getUserMaterials(userId));
     }
 
@@ -62,7 +62,7 @@ public class LearningMaterialController {
     public ResponseEntity<LearningMaterialResponse> getMaterial(
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable Long id) {
-        Long userId = 1L; // Заглушка
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         return ResponseEntity.ok(learningMaterialService.getMaterial(id, userId));
     }
 
@@ -75,7 +75,7 @@ public class LearningMaterialController {
     public ResponseEntity<Void> deleteMaterial(
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable Long id) {
-        Long userId = 1L; // Заглушка
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         learningMaterialService.deleteMaterial(id, userId);
         return ResponseEntity.ok().build();
     }
@@ -89,7 +89,7 @@ public class LearningMaterialController {
     public ResponseEntity<Void> processMaterial(
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable Long id) {
-        Long userId = 1L; // Заглушка
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         var material = learningMaterialService.getMaterial(id, userId);
         // В реальном приложении запускать асинхронно
         return ResponseEntity.ok().build();

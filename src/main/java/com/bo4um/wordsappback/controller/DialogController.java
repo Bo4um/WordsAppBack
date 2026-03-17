@@ -59,7 +59,7 @@ public class DialogController {
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestBody StartDialogRequest request) {
         // TODO: Get user ID from JWT token properly
-        Long userId = 1L; // Заглушка, нужно реализовать получение из токена
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         return ResponseEntity.ok(dialogService.startDialog(userId, request));
     }
 
@@ -70,7 +70,7 @@ public class DialogController {
     })
     public ResponseEntity<List<DialogSessionResponse>> getSessions(
             @AuthenticationPrincipal UserDetails userDetails) {
-        Long userId = 1L; // Заглушка
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         return ResponseEntity.ok(dialogService.getUserSessions(userId));
     }
 
@@ -94,7 +94,7 @@ public class DialogController {
     public ResponseEntity<DialogMessageResponse> sendMessage(
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestBody DialogMessageRequest request) {
-        Long userId = 1L; // Заглушка
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         return ResponseEntity.ok(dialogService.sendMessage(userId, request));
     }
 
@@ -107,7 +107,7 @@ public class DialogController {
     public Flux<DialogMessageResponse> sendMessageStreaming(
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestBody DialogMessageRequest request) {
-        Long userId = 1L; // Заглушка
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         return dialogService.sendMessageStreaming(userId, request);
     }
 
@@ -120,7 +120,7 @@ public class DialogController {
     public ResponseEntity<DialogSessionResponse> endSession(
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable Long id) {
-        Long userId = 1L; // Заглушка
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         return ResponseEntity.ok(dialogService.endSession(id, userId));
     }
 }

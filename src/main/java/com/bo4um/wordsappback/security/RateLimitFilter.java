@@ -79,12 +79,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
 
     private Long getUserIdFromContext() {
         try {
-            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            if (principal instanceof org.springframework.security.core.userdetails.User) {
-                // Здесь можно получить userId из кастомного UserDetails
-                // Пока заглушка - нужно реализовать получение из JWT токена
-                return 1L;
-            }
+            return com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         } catch (Exception e) {
             log.debug("Could not extract userId from security context: {}", e.getMessage());
         }

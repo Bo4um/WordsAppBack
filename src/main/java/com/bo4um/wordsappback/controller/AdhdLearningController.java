@@ -33,7 +33,7 @@ public class AdhdLearningController {
     })
     public ResponseEntity<AdhdLearningProfile> getProfile(
             @AuthenticationPrincipal UserDetails userDetails) {
-        Long userId = 1L; // Заглушка
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         return ResponseEntity.ok(adhdService.getOrCreateProfile(userId));
     }
 
@@ -44,7 +44,7 @@ public class AdhdLearningController {
     })
     public ResponseEntity<AdhdLearningProfile> enableAdhdMode(
             @AuthenticationPrincipal UserDetails userDetails) {
-        Long userId = 1L; // Заглушка
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         return ResponseEntity.ok(adhdService.enableAdhdMode(userId));
     }
 
@@ -55,7 +55,7 @@ public class AdhdLearningController {
     })
     public ResponseEntity<AdhdLearningProfile> disableAdhdMode(
             @AuthenticationPrincipal UserDetails userDetails) {
-        Long userId = 1L; // Заглушка
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         return ResponseEntity.ok(adhdService.disableAdhdMode(userId));
     }
 
@@ -68,7 +68,7 @@ public class AdhdLearningController {
     public ResponseEntity<AdhdLearningProfile> updateSessionDuration(
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestBody Map<String, Integer> request) {
-        Long userId = 1L; // Заглушка
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         return ResponseEntity.ok(adhdService.updateSessionDuration(userId, request.get("duration")));
     }
 
@@ -80,7 +80,7 @@ public class AdhdLearningController {
     public ResponseEntity<AdhdLearningProfile> updateFocusMode(
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestBody Map<String, String> request) {
-        Long userId = 1L; // Заглушка
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         return ResponseEntity.ok(adhdService.updateFocusMode(userId, request.get("mode")));
     }
 
@@ -91,7 +91,7 @@ public class AdhdLearningController {
     })
     public ResponseEntity<Map<String, Integer>> getRecommendedDuration(
             @AuthenticationPrincipal UserDetails userDetails) {
-        Long userId = 1L; // Заглушка
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         int duration = adhdService.getRecommendedSessionLength(userId);
         return ResponseEntity.ok(Map.of("recommendedMinutes", duration));
     }

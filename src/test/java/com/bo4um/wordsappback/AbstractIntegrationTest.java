@@ -17,7 +17,7 @@ import org.testcontainers.utility.DockerImageName;
  */
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Testcontainers
+@Testcontainers(disabledWithoutDocker = true)
 @ActiveProfiles("test")
 public abstract class AbstractIntegrationTest {
 

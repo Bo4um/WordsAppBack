@@ -17,6 +17,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 import java.util.List;
 import java.util.Map;
+import reactor.core.publisher.Flux;
 
 @Slf4j
 @Service
@@ -240,5 +241,86 @@ public class OpenAiService {
                   ]
                 }
                 """.formatted(targetLanguage);
+    }
+
+    @SuppressWarnings("unchecked")
+    public String callChatCompletion(Map<String, Object> requestBody) {
+        try {
+            String jsonRequest = objectMapper.writeValueAsString(requestBody);
+            log.debug("OpenAI Chat Completion Request: {}", jsonRequest);
+
+            Map<String, Object> response = webClient.post()
+                    .uri(openAiProperties.getUrl())
+                    .header("Authorization", "Bearer " + openAiProperties.getKey())
+                    .header("Content-Type", "application/json")
+                    .bodyValue(requestBody)
+                    .retrieve()
+                    .bodyToMono(Map.class)
+                    .block();
+
+            if (response == null || !response.containsKey("output")) {
+                throw new RuntimeException("Empty response from OpenAI API");
+            }
+
+            return extractContent(response);
+
+        } catch (WebClientResponseException e) {
+            log.error("OpenAI API error: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
+            throw new RuntimeException("OpenAI API error: " + e.getStatusCode(), e);
+        } catch (JsonProcessingException e) {
+            log.error("Failed to process JSON: {}", e.getMessage());
+            throw new RuntimeException("Failed to process JSON", e);
+        }
+    }
+
+    public Flux<String> streamChatCompletion(Map<String, Object> requestBody) {
+        try {
+            requestBody.put("stream", true);
+
+            return webClient.post()
+                    .uri(openAiProperties.getUrl())
+                    .header("Authorization", "Bearer " + openAiProperties.getKey())
+                    .header("Content-Type", "application/json")
+                    .bodyValue(requestBody)
+                    .retrieve()
+                    .bodyToFlux(String.class)
+                    .map(this::parseSSEEvent);
+
+        } catch (WebClientResponseException e) {
+            log.error("OpenAI streaming error: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
+            return Flux.error(new RuntimeException("OpenAI API error: " + e.getStatusCode()));
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public String extractContent(Map<String, Object> response) {
+        try {
+            List<Map<String, Object>> output = (List<Map<String, Object>>) response.get("output");
+            if (output != null && !output.isEmpty()) {
+                Map<String, Object> content = output.get(0);
+                List<Map<String, Object>> contentList = (List<Map<String, Object>>) content.get("content");
+                if (contentList != null && !contentList.isEmpty()) {
+                    return (String) contentList.get(0).get("text");
+                }
+            }
+            return "Sorry, I couldn't generate a response.";
+        } catch (Exception e) {
+            log.error("Failed to extract content from response: {}", e.getMessage());
+            return "Sorry, there was an error processing the response.";
+        }
+    }
+
+    private String parseSSEEvent(String event) {
+        if (event.startsWith("data: ")) {
+            String data = event.substring(6);
+            try {
+                objectMapper.readValue(data, Map.class);
+                return data;
+            } catch (JsonProcessingException e) {
+                log.warn("Failed to parse SSE event: {}", e.getMessage());
+                return event;
+            }
+        }
+        return event;
     }
 }

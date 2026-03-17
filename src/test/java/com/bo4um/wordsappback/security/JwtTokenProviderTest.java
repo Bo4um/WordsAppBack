@@ -33,7 +33,7 @@ class JwtTokenProviderTest {
     @DisplayName("Should generate valid token")
     void generateToken_Success() {
         // When
-        String token = jwtTokenProvider.generateToken("testuser", "USER");
+        String token = jwtTokenProvider.generateToken("testuser", "USER", 1L);
 
         // Then
         assertNotNull(token);
@@ -45,7 +45,7 @@ class JwtTokenProviderTest {
     @DisplayName("Should extract username from token")
     void getUsername_FromToken() {
         // Given
-        String token = jwtTokenProvider.generateToken("testuser", "USER");
+        String token = jwtTokenProvider.generateToken("testuser", "USER", 1L);
 
         // When
         String username = jwtTokenProvider.getUsernameFromToken(token);
@@ -58,7 +58,7 @@ class JwtTokenProviderTest {
     @DisplayName("Should extract role from token")
     void getRole_FromToken() {
         // Given
-        String token = jwtTokenProvider.generateToken("admin", "ADMIN");
+        String token = jwtTokenProvider.generateToken("admin", "ADMIN", 1L);
 
         // When
         String role = jwtTokenProvider.getRoleFromToken(token);
@@ -71,7 +71,7 @@ class JwtTokenProviderTest {
     @DisplayName("Should validate valid token")
     void validateToken_ValidToken() {
         // Given
-        String token = jwtTokenProvider.generateToken("testuser", "USER");
+        String token = jwtTokenProvider.generateToken("testuser", "USER", 1L);
 
         // When
         boolean isValid = jwtTokenProvider.validateToken(token);
@@ -143,7 +143,7 @@ class JwtTokenProviderTest {
         String role = "USER";
 
         // When
-        String token = jwtTokenProvider.generateToken(username, role);
+        String token = jwtTokenProvider.generateToken(username, role, 1L);
         String extractedUsername = jwtTokenProvider.getUsernameFromToken(token);
         String extractedRole = jwtTokenProvider.getRoleFromToken(token);
 
@@ -156,8 +156,8 @@ class JwtTokenProviderTest {
     @DisplayName("Should handle different user roles")
     void generateToken_DifferentRoles() {
         // Given
-        String adminToken = jwtTokenProvider.generateToken("admin", "ADMIN");
-        String userToken = jwtTokenProvider.generateToken("user", "USER");
+        String adminToken = jwtTokenProvider.generateToken("admin", "ADMIN", 1L);
+        String userToken = jwtTokenProvider.generateToken("user", "USER", 2L);
 
         // Then
         assertEquals("ADMIN", jwtTokenProvider.getRoleFromToken(adminToken));
@@ -174,7 +174,7 @@ class JwtTokenProviderTest {
         String role = "USER";
 
         // When
-        String token = jwtTokenProvider.generateToken(username, role);
+        String token = jwtTokenProvider.generateToken(username, role, 1L);
         String extractedUsername = jwtTokenProvider.getUsernameFromToken(token);
 
         // Then
@@ -185,7 +185,7 @@ class JwtTokenProviderTest {
     @DisplayName("Token should have correct expiration")
     void generateToken_Expiration() {
         // Given
-        String token = jwtTokenProvider.generateToken("testuser", "USER");
+        String token = jwtTokenProvider.generateToken("testuser", "USER", 1L);
 
         // When - парсим токен для проверки expiration
         Claims claims = Jwts.parser()

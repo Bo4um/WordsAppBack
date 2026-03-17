@@ -32,9 +32,10 @@ public class JwtTokenProvider {
     /**
      * Generate JWT token for user
      */
-    public String generateToken(String username, String role) {
+    public String generateToken(String username, String role, Long userId) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", role);
+        claims.put("userId", userId);
         return createToken(claims, username);
     }
 
@@ -81,6 +82,25 @@ public class JwtTokenProvider {
                 .parseSignedClaims(token)
                 .getPayload();
         return claims.get("role", String.class);
+    }
+
+    /**
+     * Get userId from token
+     */
+    public Long getUserIdFromToken(String token) {
+        Claims claims = Jwts.parser()
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+        
+        Object userIdObj = claims.get("userId");
+        if (userIdObj instanceof Number) {
+            return ((Number) userIdObj).longValue();
+        } else if (userIdObj instanceof String) {
+            return Long.parseLong((String) userIdObj);
+        }
+        return null; // or throw exception depending on requirements
     }
 
     private <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {

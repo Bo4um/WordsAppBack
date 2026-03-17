@@ -33,14 +33,8 @@ public class ExerciseGeneratorService {
 
     private final ExerciseRepository exerciseRepository;
     private final UserRepository userRepository;
-    private final WebClient webClient;
     private final ObjectMapper objectMapper;
-
-    @Value("${openai.api.url:https://api.openai.com/v1/responses}")
-    private String openAiUrl;
-
-    @Value("${openai.api.key:}")
-    private String openAiKey;
+    private final OpenAiService openAiService;
 
     /**
      * Генерация упражнений через AI
@@ -151,7 +145,7 @@ public class ExerciseGeneratorService {
             throws JsonProcessingException {
 
         Map<String, Object> apiRequest = buildExerciseGenerationRequest(request);
-        String response = callOpenAI(apiRequest);
+        String response = openAiService.callChatCompletion(apiRequest);
 
         // Парсим ответ - ожидаем массив упражнений
         return parseExercisesFromResponse(response, request);
@@ -222,43 +216,6 @@ public class ExerciseGeneratorService {
             case "C2" -> "proficiency";
             default -> "intermediate";
         };
-    }
-
-    private String callOpenAI(Map<String, Object> request) throws JsonProcessingException {
-        String jsonRequest = objectMapper.writeValueAsString(request);
-        log.debug("OpenAI Exercise Generation Request: {}", jsonRequest);
-
-        Map<String, Object> response = webClient.post()
-                .uri(openAiUrl)
-                .header("Authorization", "Bearer " + openAiKey)
-                .header("Content-Type", "application/json")
-                .bodyValue(request)
-                .retrieve()
-                .bodyToMono(Map.class)
-                .block();
-
-        if (response == null || !response.containsKey("output")) {
-            throw new RuntimeException("Empty response from OpenAI API");
-        }
-
-        return extractContentFromResponse(response);
-    }
-
-    private String extractContentFromResponse(Map<String, Object> response) {
-        try {
-            List<Map<String, Object>> output = (List<Map<String, Object>>) response.get("output");
-            if (output != null && !output.isEmpty()) {
-                Map<String, Object> content = output.get(0);
-                List<Map<String, Object>> contentList = (List<Map<String, Object>>) content.get("content");
-                if (contentList != null && !contentList.isEmpty()) {
-                    return (String) contentList.get(0).get("text");
-                }
-            }
-            throw new RuntimeException("Invalid response structure from OpenAI");
-        } catch (Exception e) {
-            log.error("Failed to extract content: {}", e.getMessage());
-            throw new RuntimeException("Failed to extract content", e);
-        }
     }
 
     @SuppressWarnings("unchecked")

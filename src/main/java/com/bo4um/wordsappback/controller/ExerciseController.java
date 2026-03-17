@@ -38,7 +38,7 @@ public class ExerciseController {
     public ResponseEntity<List<ExerciseResponse>> generateExercises(
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestBody GenerateExerciseRequest request) {
-        Long userId = 1L; // Заглушка - получить из JWT
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
 
         if (request.getLanguage() == null) {
             return ResponseEntity.badRequest().build();
@@ -56,7 +56,7 @@ public class ExerciseController {
     public ResponseEntity<List<ExerciseResponse>> getMyExercises(
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestParam(required = false) Boolean completed) {
-        Long userId = 1L; // Заглушка
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
 
         List<ExerciseResponse> exercises = exerciseGeneratorService.getUserExercises(userId, completed);
         return ResponseEntity.ok(exercises);
@@ -81,7 +81,7 @@ public class ExerciseController {
     public ResponseEntity<SubmitAnswerResponse> submitAnswer(
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestBody SubmitAnswerRequest request) {
-        Long userId = 1L; // Заглушка
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
 
         SubmitAnswerResponse response = exerciseGeneratorService.submitAnswer(userId, request);
         return ResponseEntity.ok(response);

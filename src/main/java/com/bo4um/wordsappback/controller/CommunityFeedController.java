@@ -55,7 +55,7 @@ public class CommunityFeedController {
     public ResponseEntity<CommunityPost> createPost(
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestBody Map<String, String> request) {
-        Long userId = 1L; // Заглушка
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         String username = userDetails.getUsername();
 
         CommunityPost post = feedService.createPost(
@@ -108,7 +108,7 @@ public class CommunityFeedController {
     })
     public ResponseEntity<List<CommunityPost>> getMyPosts(
             @AuthenticationPrincipal UserDetails userDetails) {
-        Long userId = 1L; // Заглушка
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         return ResponseEntity.ok(feedService.getUserPosts(userId));
     }
 }

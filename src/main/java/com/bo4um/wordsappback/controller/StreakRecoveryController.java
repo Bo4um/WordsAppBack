@@ -52,7 +52,7 @@ public class StreakRecoveryController {
     })
     public ResponseEntity<Map<String, Integer>> getRecoveryTokens(
             @AuthenticationPrincipal UserDetails userDetails) {
-        Long userId = 1L; // Заглушка
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
 
         int tokens = recoveryService.getRecoveryTokens(userId);
         return ResponseEntity.ok(Map.of("tokens", tokens));

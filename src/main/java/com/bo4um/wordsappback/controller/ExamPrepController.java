@@ -35,7 +35,7 @@ public class ExamPrepController {
     public ResponseEntity<ExamPrepTest> submitTest(
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestBody Map<String, Object> request) {
-        Long userId = 1L; // Заглушка
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
 
         ExamPrepTest test = examPrepService.submitTest(
                 userId,
@@ -56,7 +56,7 @@ public class ExamPrepController {
     public ResponseEntity<List<ExamPrepTest>> getTestHistory(
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestParam String examType) {
-        Long userId = 1L; // Заглушка
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         return ResponseEntity.ok(examPrepService.getUserTests(userId, examType));
     }
 
@@ -69,7 +69,7 @@ public class ExamPrepController {
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestParam String examType,
             @RequestParam String section) {
-        Long userId = 1L; // Заглушка
+        Long userId = com.bo4um.wordsappback.security.SecurityUtils.getCurrentUserId();
         double average = examPrepService.getAverageScore(userId, examType, section);
 
         return ResponseEntity.ok(Map.of(
